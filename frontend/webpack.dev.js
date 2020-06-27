@@ -4,7 +4,6 @@ const path = require('path')
 const copy = require('copy-webpack-plugin')
 const html = require('html-webpack-plugin')
 const extract = require('mini-css-extract-plugin')
-
 /* @type import('webpack').Configuration */
 
 module.exports = {
@@ -19,6 +18,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
+  },
+  node: {
+    fs: 'empty',
   },
   module: {
     rules: [
@@ -42,17 +44,17 @@ module.exports = {
     ],
   },
   plugins: [
-    new copy({
-      patterns: [{ from: path.resolve(__dirname, 'public'), to: path.resolve(__dirname, 'dist') }],
-    }),
+    new html({ template: path.resolve(__dirname, 'src', 'index.html') }),
+    // new copy({
+    //   patterns: [{ from: path.resolve(__dirname, 'public'), to: path.resolve(__dirname, 'dist') }],
+    // }),
     new extract({
       filename: 'css/[name].css',
       chunkFilename: 'css/[id].css',
     }),
-    new html({ template: path.resolve(__dirname, 'public/index.html') }),
   ],
   devServer: {
-    contentBase: path.resolve(__dirname, 'public'),
+    contentBase: path.join(__dirname, 'dist'),
     historyApiFallback: true,
     port: 3000,
     watchContentBase: true,
