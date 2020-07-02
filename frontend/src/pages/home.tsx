@@ -1,65 +1,68 @@
 import React, { useState } from 'react'
-import { Page, Text, Grid, Card, Row, Loading, Display, Button, Image } from '@zeit-ui/react'
-// import { useTransition, animated } from 'react-spring'
-import { useQuery } from '@apollo/react-hooks'
-import { GET_RANDOM_BATTLE } from '../utils/graphql'
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+import { Text, Grid } from '@zeit-ui/react'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { GET_RANDOM_BATTLE, CREATE_VOTE } from '../utils/graphql'
 import CatCard from '../components/CatCard'
+import AppContainer from '../components/AppContainer'
+import { LoadingComponent, ErrorComponent } from '../components/Misc'
 
 export default function Home(): JSX.Element {
-  const { loading, error, data } = useQuery(GET_RANDOM_BATTLE)
+  const [winner, setWinner] = useState(null)
+  const { loading, error, data, refetch } = useQuery(GET_RANDOM_BATTLE, {
+    notifyOnNetworkStatusChange: true,
+    onCompleted: () => setWinner(null),
+  })
+  const [createVote, { loading: mutateLoading }] = useMutation(CREATE_VOTE, {
+    onCompleted: ({ createVote }) => {
+      const {
+        winner: { id },
+      } = createVote
+      setWinner(id)
+      setTimeout(() => refetch(), 5000)
+    },
+  })
 
-  if (error) {
-    return (
-      <Page>
-        <Text>Something went wrong :/</Text>
-      </Page>
-    )
-  }
+  if (loading) return LoadingComponent
+  if (error) return ErrorComponent
+
+  const leftCat = data.getRandomBattle.first
+  const rightCat = data.getRandomBattle.second
 
   return (
-    <Page render="effect" dotBackdrop>
-      <Page.Header>
-        <Header />
-      </Page.Header>
-      <Page.Content style={{ backgroundColor: 'white' }}>
-        {loading ? (
-          <Row style={{ padding: '10px 0' }}>
-            <Loading size="large" />
-          </Row>
-        ) : (
-          <Grid.Container gap={4} justify="center">
-            <Grid xs={12} md={12}>
-              <CatCard data={data.getRandomBattle.first} />
-            </Grid>
-            <Grid xs={12} md={12}>
-              <CatCard data={data.getRandomBattle.second} />
-            </Grid>
-          </Grid.Container>
-        )}
-      </Page.Content>
-      <Page.Footer>
-        <Footer />
-      </Page.Footer>
-    </Page>
+    <AppContainer>
+      <Grid.Container gap={4} justify="center">
+        <Grid xs={12} md={12}>
+          <CatCard
+            onClick={() =>
+              createVote({
+                variables: {
+                  winner: leftCat.id,
+                  loser: rightCat.id,
+                },
+              })
+            }
+            data={leftCat}
+            loading={mutateLoading}
+            winner={winner ? leftCat.id === winner : null}
+          />
+        </Grid>
+        <Grid xs={12} md={12}>
+          <CatCard
+            onClick={() =>
+              createVote({
+                variables: {
+                  winner: rightCat.id,
+                  loser: leftCat.id,
+                },
+              })
+            }
+            data={rightCat}
+            loading={mutateLoading}
+            winner={winner ? rightCat.id === winner : null}
+          />
+        </Grid>
+        {winner && <Text>Thanks for voting, next vote in 5seconds...</Text>}
+      </Grid.Container>
+    </AppContainer>
   )
 }
-
-// const [toggle, set] = useState(true)
-// const transitions = useTransition(toggle, null, {
-//   from: { position: 'absolute', opacity: 0 },
-//   enter: { opacity: 1 },
-//   leave: { opacity: 0 },
-// })
-// /* {transitions.map(({ item, key, props }) =>
-//   item ? (
-//     <animated.div style={props}>
-//     <div onClick={() => set(!toggle)}>This one (test) 🤔</div>
-//     </animated.div>
-//     ) : (
-//       <animated.div style={props}>
-//       <div onClick={() => set(!toggle)}>💕</div>
-//       </animated.div>
-//       )
-//     )} */

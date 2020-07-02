@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, ArgsType } from 'type-graphql'
+import { ObjectType, Field, ID, ArgsType, Int } from 'type-graphql'
 import { Cat } from '../cat/cat.types'
 
 @ObjectType()
@@ -26,8 +26,8 @@ export class Battle {
 
 @ArgsType()
 export class CreateVote {
-  @Field(() => ID)
+  @Field(() => Int)
   winner: number
-  @Field(() => ID)
+  @Field(() => Int)
   loser: number
 }

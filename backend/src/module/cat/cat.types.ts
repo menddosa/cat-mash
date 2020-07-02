@@ -1,23 +1,20 @@
-import 'reflect-metadata'
-import { ObjectType, Field, ID, InputType, Float } from 'type-graphql'
-import { IsEmail } from 'class-validator'
-import { Vote } from '../vote/vote.types'
+import { ObjectType, Field, Float, Int } from 'type-graphql'
 
 @ObjectType()
 export class Cat {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number
   @Field(() => String)
   image: string
   @Field(() => Number)
   elo: number
   @Field(() => Number)
-  wins: Number
+  wins?: number
   @Field(() => Number)
-  loses: Number
+  loses?: number
 
   @Field(() => Float)
-  winRate: Number
+  winRate?: number
 
   @Field(() => Date)
   createdAt: Date
@@ -25,3 +22,38 @@ export class Cat {
   updatedAt: Date
 }
 
+@ObjectType()
+export class CatEdge {
+  @Field(() => Cat)
+  node: Cat
+  @Field(() => Int)
+  cursor: number
+}
+
+@ObjectType()
+export class PageInfo {
+  @Field(() => Boolean, { nullable: true })
+  hasNextPage?: boolean
+
+  @Field(() => Number)
+  currentPage: number
+}
+
+@ObjectType()
+export class CatConnection {
+  @Field(() => [CatEdge])
+  edges: CatEdge[]
+
+  @Field(() => PageInfo)
+  pageInfo: PageInfo
+}
+
+export type Edge<K> = {
+  node: K
+  cursor: number
+}
+
+export type Connection<K> = {
+  edges: Edge<K>
+  pageInfo: PageInfo
+}

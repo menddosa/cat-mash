@@ -6,6 +6,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from './pages/home'
 import NotFound from './pages/not-found'
 import { client } from './utils/apollo'
+import Ranking from './pages/ranking'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/ranking" component={Ranking} />
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>

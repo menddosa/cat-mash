@@ -8,6 +8,7 @@ import CatResolvers from './module/cat/cat.resolver'
 const app = async () => {
   const schema = await tq.buildSchema({
     resolvers: [CatResolvers, VoteResolvers],
+    validate: false,
   })
 
   new GraphQLServer({
