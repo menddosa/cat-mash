@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, Grid } from '@zeit-ui/react'
+import { Text, Grid, Link } from '@zeit-ui/react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { GET_RANDOM_BATTLE, CREATE_VOTE } from '../utils/graphql'
 import CatCard from '../components/CatCard'
@@ -62,6 +62,9 @@ export default function Home(): JSX.Element {
           />
         </Grid>
         {winner && <Text>Thanks for voting, next vote in 5seconds...</Text>}
+        <Link href="/ranking" color>
+          See ranking
+        </Link>
       </Grid.Container>
     </AppContainer>
   )

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const path = require('path')
-const copy = require('copy-webpack-plugin')
 const html = require('html-webpack-plugin')
 const extract = require('mini-css-extract-plugin')
 /* @type import('webpack').Configuration */
@@ -45,9 +44,6 @@ module.exports = {
   },
   plugins: [
     new html({ template: path.resolve(__dirname, 'src', 'index.html') }),
-    // new copy({
-    //   patterns: [{ from: path.resolve(__dirname, 'public'), to: path.resolve(__dirname, 'dist') }],
-    // }),
     new extract({
       filename: 'css/[name].css',
       chunkFilename: 'css/[id].css',

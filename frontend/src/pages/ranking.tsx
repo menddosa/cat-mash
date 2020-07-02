@@ -33,7 +33,6 @@ export default function Ranking(): JSX.Element {
           const { node } = edge
           return <RankingCard key={node.id} node={node} />
         })}
-
         <Grid.Container gap={2} justify="center">
           <Grid justify="center">
             <Button disabled={!hasNextPage} onClick={() => refetch({ page: page + 1 })}>

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const path = require('path')
+const webpack = require('webpack')
 const { CleanWebpackPlugin: clean } = require('clean-webpack-plugin')
-const copy = require('copy-webpack-plugin')
 const html = require('html-webpack-plugin')
 const extract = require('mini-css-extract-plugin')
 
@@ -46,13 +46,15 @@ module.exports = {
   },
   plugins: [
     new clean(),
-    new copy({
-      patterns: [{ from: path.resolve(__dirname, 'public'), to: path.resolve(__dirname, 'dist') }],
+    new webpack.DefinePlugin({
+      ['process.env']: {
+        API_URL: JSON.stringify(process.env.API_URL),
+      },
     }),
     new extract({
       filename: 'css/[name]-[contenthash].css',
       chunkFilename: 'css/[id]-[contenthash].css',
     }),
-    new html({ template: path.resolve(__dirname, 'public/index.html') }),
+    new html({ template: path.resolve(__dirname, 'src/index.html') }),
   ],
 }
